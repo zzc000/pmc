@@ -1,7 +1,10 @@
 <a href="https://www.amazon.com/dp/B07QHF4117"><h1>Programming Salesforce Marketing Cloud</h1></a>
+
 <p align="center">
   <a href="https://www.amazon.com/dp/B07QHF4117"><img src="images/ProgrammingMarketingCloud.jpg" width="200"  /></a>
 </p>
+
+If you have questions about any aspect of this book or the sample code, please email me at zhongchen.zhou@live.com.au
 
 ## Install salesforce unmanaged package
 
