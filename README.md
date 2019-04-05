@@ -1,11 +1,11 @@
 <a href="https://www.amazon.com/dp/B07QHF4117"><h1>Programming Salesforce Marketing Cloud</h1></a>
 <p align="center">
-  <a href="https://www.amazon.com/dp/B07QHF4117"><img src="images/ProgrammingMarketingCloud.jpg" width="100"  /></a>
+  <a href="https://www.amazon.com/dp/B07QHF4117"><img src="https://images-na.ssl-images-amazon.com/images/I/41F4foW4nvL.jpg" width="100"  /></a>
 </p>
 
 ## Install salesforce unmanaged package
 
-The full working sample code discussed in the book "Programming Salesforce Marketing Cloud" can be installed as unmanaged package from the URL or short URL:
+The full working sample code discussed in the book <a href="https://www.amazon.com/dp/B07QHF4117">"Programming Salesforce Marketing Cloud"</a> can be installed as unmanaged package from the URL or short URL:
 
 - **Production / Developer Org**:
     - https://login.salesforce.com/packaging/installPackage.apexp?p0=04t0o000002pZhS
