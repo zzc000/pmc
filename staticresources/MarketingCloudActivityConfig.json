@@ -1,0 +1,61 @@
+{
+	"workflowApiVersion": "1.1",
+	"metaData": {
+		"icon": "https://cdn.freebiesupply.com/logos/large/2x/twilio-logo-png-transparent.png",
+		"category": "message",
+		"expressionBuilderPrefix": "ZZ",
+		"isConfigured": false,
+		"configurationDisabled": false,
+		"configOnDrop": true
+	},
+	"type": "REST",
+	"lang": {
+		"en-US": {
+			"name": "Twilio SMS",
+			"description": "Use twilio to send out SMS."
+		},
+		"zh-CN": {
+			"name": "Twilio 短信",
+			"description": "使用Twilio发送短信。"
+		}
+	},
+	"arguments": {
+		"execute": {
+			"inArguments": [
+				{
+					"contactKey": "{{Contact.Key}}",
+					"mobile": "{{InteractionDefaults.MobileNumber}}",
+					"email": "{{InteractionDefaults.Email}}"
+				}
+			],
+			"outArguments": [],
+			"useJwt": true,
+			"url": "https://YOUR-SALESFORCE-SITE-URL/services/apexrest/activity/sms/execute?state=state"
+		}
+	},
+	"configurationArguments": {
+		"publish": {
+			"url": "https://YOUR-SALESFORCE-SITE-URL/services/apexrest/activity/sms/publish",
+			"verb": "POST",
+			"body": ""
+		},
+		"validate": {
+			"url": "https://YOUR-SALESFORCE-SITE-URL/services/apexrest/activity/sms/validate",
+			"verb": "POST",
+			"body": ""
+		}
+	},
+	"userInterfaces": {
+		"configModal": {
+			"url": "https://YOUR-SALESFORCE-SITE-URL/CustomSmsActivity?ui=configModal",
+			"height": 450,
+			"width": 600
+		},
+		"runningModal": {
+			"url": "https://YOUR-SALESFORCE-SITE-URL/CustomSmsActivity?ui=runningModal"
+		},
+		"runningHover": {
+			"url": "https://YOUR-SALESFORCE-SITE-URL/CustomSmsActivity?ui=runningHover"
+		}
+	}
+}
