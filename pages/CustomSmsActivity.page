@@ -1,0 +1,168 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false"
+           docType="html-5.0" cache="false" controller="CustomSmsActivityController" action="{!authenticate}">
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Custom SMS Activity - Marketing Cloud</title>
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        
+        <body>
+            
+            <div id="custom-sms" class="slds-scope slds-form">
+                <div class="slds-form-element slds-form-element_stacked">
+                    <label class="slds-form-element__label" for="select-template">SMS Template</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" id="select-template">
+                                <option value="0">Please select SMS template</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-form-element_stacked">
+                    <span class="slds-form-element__label">Template Content</span>
+                    <div class="slds-form-element__control slds-border_bottom">
+                        <div class="slds-form-element__static">
+                            <p id="template-content"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script src="{!$Resource.postmonger}"></script>
+            <script type="text/javascript">
+                
+                var connection = new Postmonger.Session();
+                connection.trigger('updateButton', { button: 'next', enabled: false });
+            
+                var payload = {};
+                connection.on('initActivity', function (data) {
+                    console.log(JSON.stringify(data));
+                    if (data) {
+                        payload = data;
+                    }
+                    var hasInArguments = Boolean(
+                        payload['arguments'] &&
+                        payload['arguments'].execute &&
+                        payload['arguments'].execute.inArguments &&
+                        payload['arguments'].execute.inArguments.length > 0
+                    );
+                    
+                    var inArguments = hasInArguments ? payload['arguments'].execute.inArguments : {};
+                    for (var i = 0; i < inArguments.length; i++) {
+                        for (var j in inArguments[i]) {
+                            if (j === 'smsTemplate') {
+                                selectedTemplate = inArguments[i][j];
+                                templateSelector.value = selectedTemplate.Id;
+                                
+                                // firing the event properly according to StackOverflow
+                                // http://stackoverflow.com/questions/2856513/how-can-i-trigger-an-onchange-event-manually
+                                if ("createEvent" in document) {
+                                    var evt = document.createEvent("HTMLEvents");
+                                    evt.initEvent("change", false, true);
+                                    templateSelector.dispatchEvent(evt);
+                                }
+                                else {
+                                    templateSelector.fireEvent("onchange");
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (selectedTemplate) {
+                        connection.trigger('updateButton', { button: 'next', enabled: true });
+                    }
+                    else {
+                        connection.trigger('updateButton', { button: 'next', enabled: false });
+                    }
+                });
+            
+                // event handler triggerred when user click "next" or "done"
+                connection.on('clickedNext', function () {
+                    if (selectedTemplate) {
+                        
+                        payload['arguments'].execute.inArguments[0].smsTemplate = selectedTemplate;
+                        
+                        var templateVariables = selectedTemplate.Content.match(/%%(.*?)%%/g);
+                        if (templateVariables){
+                            payload['arguments'].execute.inArguments[0].smsTemplate.Variables = [];
+                            selectedTemplate.Complied = Object.assign(selectedTemplate.Content, "");
+                            for (var i = 0; i < templateVariables.length; i++){
+                                var templateVariable = templateVariables[i].replace(/%%/g, "");
+                                selectedTemplate.Complied = selectedTemplate.Complied.replace(templateVariables[i], '{{Contact.Attribute.' + templateVariable + '}}');
+                                var templateVariableObj = {
+                                    name: templateVariable,
+                                    value: '{{Contact.Attribute.' + templateVariable + '}}' // no space before or after double curly brackets
+                                };
+                                payload['arguments'].execute.inArguments[0].smsTemplate.Variables.push(templateVariableObj);
+                            }
+                        }
+                        
+                        payload['metaData'].isConfigured = true;
+                        connection.trigger('updateActivity', payload);
+                    }
+                    else {
+                        connection.trigger('ready');
+                    }
+                });
+            
+                // template selector onchange event
+                var selectedTemplate, templates = [];
+                var templateSelector = document.querySelector("#select-template");
+                var contentTag = document.querySelector("#template-content");
+                templateSelector.addEventListener("change", function(e){
+                    while (contentTag.firstChild) {
+                        contentTag.removeChild(contentTag.firstChild);
+                    }
+                    
+                    var templateId = e.target.value;
+                    if (templateId != 0) {
+                        for (var i = 0; i < templates.length; i++){
+                            if (templateId === templates[i].Id){
+                                selectedTemplate = templates[i];
+                                contentTag.appendChild(document.createTextNode(selectedTemplate.Content));
+                                break;
+                            }
+                        }
+                        connection.trigger('updateButton', { button: 'next', enabled: true });
+                    }
+                    else {
+                        selectedTemplate = null;
+                        connection.trigger('updateButton', { button: 'next', enabled: false });
+                    }
+                });
+            
+                // retrieve sms templates from server and add options to user interface
+                Visualforce.remoting.Manager.invokeAction(
+                    "{!$RemoteAction.CustomSmsActivityController.getContentBuilderSmsTemplates}",
+                    '{!token}',
+                    function (result, event) {
+                        if (event.status) {
+                            templates = result;
+                            for (var i = 0; i < result.length; i++){
+                                var option = new Option(result[i].Name, result[i].Id);
+                                templateSelector.appendChild(option);
+                            }
+                            // JB will respond the first time 'ready' is called with 'initActivity'
+                            connection.trigger('ready');
+                        } else if (event.type === 'exception') {
+                            error(null, event.message, event.message);
+                            console.log(event);
+                        } else {
+                            console.log(event);
+                        }
+                    },
+                    { escape: false }
+                );
+            </script>
+        </body>
+        
+    </html>
+</apex:page>
