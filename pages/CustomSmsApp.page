@@ -1,0 +1,180 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false"
+           docType="html-5.0" cache="false" controller="CustomSmsAppController" action="{!authenticate}">
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Custom SMS App - Marketing Cloud</title>
+            <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MarketingCloudApp, 'datatables.min.css')}" />
+        </head>
+        
+        <body>
+            
+            <div id="custom-sms">
+                <h4 class="text-center" style="margin-top:30px;">
+                    Twilio SMS
+                </h4>
+                <div class="containeraaa" style="margin-left:60px;margin-right:20px;">
+                    <div class="table-responsive row justify-content-sm-center">
+                        <table id="dataTable" class="table table-bordered table-hover table-sm" style="width:100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">SMS Id</th>
+                                    <th scope="col">Template Name</th>
+                                    <th scope="col">To Number</th>
+                                    <th scope="col">Text</th>
+                                    <th scope="col">Date Created</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date Sent</th>
+                                    <th scope="col">Date Updated</th>
+                                    <th scope="col">Error Message</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <script src="{!URLFOR($Resource.MarketingCloudApp, 'datatables.min.js')}"></script>
+            <script type="text/javascript">
+            // https://datatables.net
+            $(function () {
+                $('#dataTable').dataTable({
+                    "serverSide": false,
+                    "ajax": function (data, callback, settings) {
+                        Visualforce.remoting.Manager.invokeAction(
+                            "{!$RemoteAction.CustomSmsAppController.listSms}",
+                            '{!token}',
+                            function (result, event) {
+                                if (event.status) {
+                                    callback({ data: result });
+                                } else if (event.type === 'exception') {
+                                    error(null, event.message, event.message);
+                                    console.log(event);
+                                } else {
+                                    console.log(event);
+                                }
+                            },
+                            { escape: false }
+                        );
+                },
+                "autoWidth": false,
+                "scrollY": "450px",
+                "scrollX": true,
+                "scrollCollapse": false,
+                "processing": true,
+                "searching": true,
+                "ordering": true,
+                "paging": true,
+                "select": true,
+                "columns": [
+                    {
+                        "name": "sid",
+                        "title": "SMS Id",
+                        "data": "sid",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "60px"
+                    },
+                    {
+                        "name": "template_name",
+                        "title": "Template Name",
+                        "data": "template_name",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "60px"
+                    },
+                    {
+                        "name": "to",
+                        "title": "To Number",
+                        "data": "to",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "body",
+                        "title": "Text",
+                        "data": "body",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "date_created",
+                        "title": "Date Created",
+                        "data": "date_created",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "status",
+                        "title": "Status",
+                        "data": "status",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "date_sent",
+                        "title": "Date Sent",
+                        "data": "date_sent",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "date_updated",
+                        "title": "Date Updated",
+                        "data": "date_updated",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "error_message",
+                        "title": "Error Message",
+                        "data": "error_message",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    }
+                ]
+            });
+        });
+        	</script>
+        </body>
+        
+    </html>
+</apex:page>
