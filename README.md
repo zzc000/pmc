@@ -1,6 +1,6 @@
 <a href="https://www.amazon.com/dp/B07QHF4117"><h1>Programming Salesforce Marketing Cloud</h1></a>
 <p align="center">
-  <a href="https://www.amazon.com/dp/B07QHF4117"><img src="https://images-na.ssl-images-amazon.com/images/I/41F4foW4nvL.jpg" width="100"  /></a>
+  <a href="https://www.amazon.com/dp/B07QHF4117"><img src="images/ProgrammingMarketingCloud.jpg" width="300"  /></a>
 </p>
 
 ## Install salesforce unmanaged package
