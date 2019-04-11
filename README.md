@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://www.amazon.com/dp/B07QHF4117"><img src="https://images-na.ssl-images-amazon.com/images/I/41UOxUNPTOL.jpg" width="200"  /></a>
+  <iframe type="text/html" width="336" height="550" frameborder="0" allowfullscreen style="max-width:100%" src="https://read.amazon.com/kp/card?asin=B07QHF4117&preview=inline&linkCode=kpe&ref_=cm_sw_r_kb_dp_G8XRCbQ0F1PMN" ></iframe>
 </p>
 
 If you have questions about any aspect of this book or the sample code, please email me at zhongchen.zhou@live.com.au
